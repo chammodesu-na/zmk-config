@@ -17,7 +17,7 @@ manifest:
       remote: m165437
       revision: main
     - name: zmk-driver-azoteq-iqs5xx
-      remote: AYM1607
+      remote: mctechnology17
       revision: main
   self:
     path: config
