@@ -1,0 +1,55 @@
+/*
+ * Corne Right Side - Trackpad Overlay
+ * Based on provided Sofle reference
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/* I2C 버스 활성화 (Nice!Nano의 D1/D0 핀 사용) */
+&pro_micro_i2c {
+    status = "okay";
+
+    /* 트랙패드 하드웨어 설정 */
+    trackpad: iqs5xx@74 {
+        compatible = "azoteq,iqs5xx";
+        reg = <0x74>;
+
+        /* * [중요] 핀 설정 (보여주신 레퍼런스 기준)
+         * reset: &gpio1 1 (P1.01)
+         * interrupt: &gpio1 2 (P1.02) 
+         */
+        reset-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
+        int-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>; 
+
+        /* 제스처 및 설정 */
+        press-and-hold;
+        press-and-hold-time = <250>;
+        
+        /* * ZMK 드라이버에서 스크롤/방향 처리를 위해
+         * 아래 Listener에서 설정을 제어하는 것이 좋습니다.
+         */
+    };
+};
+
+/* ZMK 입력 리스너 (트랙패드 신호를 마우스 동작으로 변환) */
+/ {
+    input_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackpad>;
+
+        /* * 보여주신 코드에 'switch-xy'가 있었으므로 
+         * 여기서 축을 교체(Swap)합니다.
+         */
+        xy-swap; 
+
+        /* * 스크롤/이동 방향이 반대라면 아래 주석을 풀어서 조정하세요
+         */
+        // x-invert;
+        // y-invert;
+        
+        /* 스크롤 강도 (배율) 조절 */
+        scale-multiplier = <1>;
+        y-invert; /* 레퍼런스의 natural-scroll-y 대응 */
+        x-invert; /* 레퍼런스의 natural-scroll-x 대응 */
+    };
+};
