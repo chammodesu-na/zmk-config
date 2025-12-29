@@ -1,30 +1,31 @@
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <dt-bindings/zmk/input_transform.h>
+
 &pro_micro_i2c {
     status = "okay";
 
-    /* v0.3 방식: 설정값을 센서 노드 안에 직접 작성 */
-    iqs5xx@74 {
+    trackpad: iqs5xx@74 {
         compatible = "azoteq,iqs5xx";
         reg = <0x74>;
-
-        /* 핀 설정 (보여주신 코드 기반) */
-        /* Nice!Nano의 P1.01과 P1.02를 사용하는 것으로 보임 */
+        
+        /* 핀 설정 (Nice!Nano P1.01, P1.02) */
         reset-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
-        rdy-gpios   = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+        int-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
 
-        /* 제스처 및 동작 설정 */
-        one-finger-tap;
+        /* 설정 */
         press-and-hold;
         press-and-hold-time = <250>;
-        two-finger-tap;
+    };
+};
 
-        scroll;
-        natural-scroll-y;
-        natural-scroll-x;
-
-        bottom-beta = <5>;
-        stationary-threshold = <5>;
-
-        /* 방향 전환 (Sofle 레퍼런스 그대로 적용) */
-        switch-xy;
+/* 입력 리스너 (최신 ZMK 필수) */
+/ {
+    input_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackpad>;
+        xy-swap; /* 방향 전환 */
+        y-invert;
+        x-invert;
+        scale-multiplier = <1>;
     };
 };
