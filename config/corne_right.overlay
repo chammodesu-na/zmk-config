@@ -1,7 +1,7 @@
 /* 불필요한 include 삭제, 표준 헤더만 유지 */
 #include <dt-bindings/zmk/matrix_transform.h>
 
-/* &default_transform { ... } 블록 삭제함 (Corne에는 불필요) */
+
 
 &pro_micro_i2c {
     status = "okay";
@@ -33,5 +33,16 @@
         switch-xy;
         /* invert-x; */
         /* invert-y; */
+    };
+};
+
+/ {
+    chosen {
+        zmk,battery = &vbatt;
+    };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-nrf-vddh";
+        label = "VBATT";
     };
 };
