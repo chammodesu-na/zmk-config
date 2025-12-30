@@ -1,38 +1,57 @@
-/* 불필요한 include 삭제, 표준 헤더만 유지 */
+/* config/corne_right.overlay */
 #include <dt-bindings/zmk/matrix_transform.h>
 
+/* * [I2C 핀 재설정]
+ * Face-Up 설치 시, PCB의 SDA/SCL 라인은 MCU의 A3/A2 핀과 연결됩니다.
+ * 기본 I2C(D2/D3)를 쓰면 매트릭스 Row와 충돌하므로 A3/A2로 옮깁니다.
+ * nRF52840 기준: A3=P0.31, A2=P0.29
+ */
+&pinctrl {
+    i2c0_default: i2c0_default {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 31)>, /* A3 (SDA) */
+                    <NRF_PSEL(TWIM_SCL, 0, 29)>; /* A2 (SCL) */
+            bias-pull-up;
+        };
+    };
 
+    i2c0_sleep: i2c0_sleep {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 31)>,
+                    <NRF_PSEL(TWIM_SCL, 0, 29)>;
+            low-power-enable;
+        };
+    };
+};
 
 &pro_micro_i2c {
     status = "okay";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
 
-    /* 트랙패드 설정 */
+    /* 트랙패드 설정 (기존 유지) */
     iqs5xx@74 {
         status = "okay";
         compatible = "azoteq,iqs5xx";
         reg = <0x74>;
 
-        /* 핀 설정 (Nice!Nano v2 기준) */
+        /* * 사용자가 연결한 "아래쪽 핀 왼쪽 2개"는 P1.01, P1.02로 추정됨.
+         * 기존 설정 유지.
+         */
         reset-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
         rdy-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
 
-        /* 동작 설정 */
         one-finger-tap;
         press-and-hold;
         press-and-hold-time = <250>;
         two-finger-tap;
-
         scroll;
         natural-scroll-y;
         natural-scroll-x;
-
         bottom-beta = <5>;
         stationary-threshold = <5>;
-
-        /* 방향 전환 (필요시 주석 해제/조정) */
         switch-xy;
-        /* invert-x; */
-        /* invert-y; */
     };
 };
 
@@ -40,7 +59,6 @@
     chosen {
         zmk,battery = &vbatt;
     };
-
     vbatt: vbatt {
         compatible = "zmk,battery-nrf-vddh";
         label = "VBATT";
