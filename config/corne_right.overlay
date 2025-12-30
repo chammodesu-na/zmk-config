@@ -1,45 +1,34 @@
 #include <dt-bindings/zmk/matrix_transform.h>
-#include <dt-bindings/zmk/input_transform.h>
+#include <dt-bindings/zmk/input_transform.h> // 필수 포함
 
 &pro_micro_i2c {
     status = "okay";
 
-    /* 트랙패드 설정 */
     trackpad: iqs5xx@74 {
         compatible = "azoteq,iqs5xx";
         reg = <0x74>;
         
-        /* * Nice!Nano v2 기준 핀 연결 (사용자 환경)
-         * Reset: P1.01 (Pro Micro 핀 아님, 나노 내부 패드)
-         * Int/Rdy: P1.02 (나노 내부 패드)
-         */
+        /* 핀 설정 (사용자 환경에 맞게 유지) */
         reset-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
         rdy-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
 
-        /* 설정값 */
+        /* 하드웨어 설정 */
         press-and-hold;
         press-and-hold-time = <250>;
-        one-finger-tap;
-        two-finger-tap;
-        scroll;
-        natural-scroll-y;
-        natural-scroll-x;
-        
-        /* 센서 방향 회전 */
-        switch-xy;
     };
 };
 
-/* 입력 리스너 연결 (Zephyr 3.5 / ZMK Main 필수) */
+/* 입력 리스너 (여기가 에러 원인이었음 -> 수정됨) */
 / {
     input_listener {
         compatible = "zmk,input-listener";
         device = <&trackpad>;
         
-        /* 커서/스크롤 방향 제어 */
-        xy-swap;
-        y-invert;
-        x-invert;
-        scale-multiplier = <1>;
+        /* * [최신 방식] input-processors를 사용하여 방향 설정 
+         * xy-swap -> &zip_xy_swap
+         * y-invert -> &zip_invert_y
+         * x-invert -> &zip_invert_x
+         */
+        input-processors = <&zip_xy_swap>, <&zip_invert_x>, <&zip_invert_y>;
     };
 };
