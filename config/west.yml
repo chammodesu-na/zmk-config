@@ -8,6 +8,8 @@ manifest:
       url-base: https://github.com/mctechnology17
     - name: AYM1607
       url-base: https://github.com/AYM1607
+    - name: CRehmann
+      url-base: https://github.com/CRehmann
   projects:
     - name: zmk
       remote: zmkfirmware
@@ -17,7 +19,7 @@ manifest:
       remote: m165437
       revision: main
     - name: zmk-driver-azoteq-iqs5xx
-      remote: mctechnology17
+      remote: CRehmann
       revision: main
   self:
     path: config
