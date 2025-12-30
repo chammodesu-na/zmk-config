@@ -2,8 +2,6 @@ manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-    - name: m165437
-      url-base: https://github.com/M165437
     - name: AYM1607
       url-base: https://github.com/AYM1607
   projects:
@@ -11,9 +9,6 @@ manifest:
       remote: zmkfirmware
       revision: v0.3
       import: app/west.yml
-    - name: nice-view-gem
-      remote: m165437
-      revision: main
     - name: zmk-driver-azoteq-iqs5xx
       remote: AYM1607
       revision: main
