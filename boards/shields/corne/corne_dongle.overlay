@@ -1,13 +1,15 @@
+#include <zmk/physical_layouts.dtsi>
+
 / {
     chosen {
-        /* 동글은 실제 키 스캔을 하지 않으므로 mock kscan만 지정 */
         zmk,kscan = &mock_kscan;
+        zmk,physical-layout = &foostan_corne_6col_layout;
     };
 
     mock_kscan: mock_kscan_0 {
         compatible = "zmk,kscan-mock";
-        columns = <0>;
         rows = <0>;
+        columns = <0>;
         events = <0>;
     };
 };
