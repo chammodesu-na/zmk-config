@@ -29,7 +29,7 @@
     default_transform: keymap_transform {
         compatible = "zmk,matrix-transform";
         rows = <4>;
-        columns = <12>;
+        columns = <6>;
 
         /*
          * 좌 6 + 우 6 (미러)
