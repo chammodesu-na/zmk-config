@@ -1,16 +1,12 @@
-/* config/corne_right.overlay */
-
+/* 불필요한 include 삭제, 표준 헤더만 유지 */
 #include <dt-bindings/zmk/matrix_transform.h>
 
-&default_transform {
-    col-offset = <6>;
-};
+/* &default_transform { ... } 블록 삭제함 (Corne에는 불필요) */
 
-/* I2C 버스 활성화 */
 &pro_micro_i2c {
     status = "okay";
 
-    /* 트랙패드 설정 (참고하신 코드와 동일한 방식) */
+    /* 트랙패드 설정 */
     iqs5xx@74 {
         status = "okay";
         compatible = "azoteq,iqs5xx";
@@ -20,7 +16,7 @@
         reset-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
         rdy-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
 
-        /* 제스처 및 동작 설정 (드라이버가 직접 처리) */
+        /* 동작 설정 */
         one-finger-tap;
         press-and-hold;
         press-and-hold-time = <250>;
@@ -30,17 +26,12 @@
         natural-scroll-y;
         natural-scroll-x;
 
-        /* 감도 조절 */
         bottom-beta = <5>;
         stationary-threshold = <5>;
 
-        /* 방향 전환 (드라이버 내부 기능 사용) */
+        /* 방향 전환 (필요시 주석 해제/조정) */
         switch-xy;
         /* invert-x; */
         /* invert-y; */
     };
 };
-
-/* * 중요: input_listener 노드를 아예 삭제했습니다.
- * 이제 드라이버가 직접 마우스 신호를 쏘기 때문에 리스너가 필요 없습니다.
- */
