@@ -1,45 +1,49 @@
 /* config/corne.overlay */
+/* SuperMini NRF52840 "Face Up" (칩이 보임) 전용 핀맵 */
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
-/* 1. 매트릭스 핀 설정 덮어쓰기 */
 &kscan0 {
     compatible = "zmk,kscan-gpio-matrix";
     wakeup-source;
+    
+    /* * 칩이 뒤집히면서 다이오드 방향과 핀 역할이 물리적으로 반전되었습니다.
+     * 따라서 row-gpios와 col-gpios의 핀을 서로 맞바꾸어 매핑합니다.
+     */
+
     diode-direction = "col2row";
 
-    /* 판매자 파일(sofle.dtsi)에서 가져온 행(Row) 핀 */
+    /* * [New Rows]
+     * 원래 PCB의 왼쪽(Row) 구멍에 -> 칩의 오른쪽 핀들이 꽂힘 
+     * 칩 오른쪽 핀: A1, A0, 15, 14 (ZMK 이름: 19, 18, 15, 14)
+     */
     row-gpios
-        = <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-        , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-        , <&pro_micro 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-        , <&pro_micro 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        = <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* A1 */
+        , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* A0 */
+        , <&pro_micro 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* 15 */
+        , <&pro_micro 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* 14 */
         ;
 
-    /* 판매자 파일(sofle_left/right)에서 가져온 열(Col) 핀 */
+    /* * [New Cols]
+     * 원래 PCB의 오른쪽(Col) 구멍에 -> 칩의 왼쪽 핀들이 꽂힘
+     * 칩 왼쪽 핀: D2, D3, D4, D5, D6, D7 (ZMK 이름: 2, 3, 4, 5, 6, 7)
+     */
     col-gpios
-        = <&pro_micro 20 GPIO_ACTIVE_HIGH>
-        , <&pro_micro 8  GPIO_ACTIVE_HIGH>
-        , <&pro_micro 7  GPIO_ACTIVE_HIGH>
-        , <&pro_micro 6  GPIO_ACTIVE_HIGH>
-        , <&pro_micro 5  GPIO_ACTIVE_HIGH>
-        , <&pro_micro 4  GPIO_ACTIVE_HIGH>
+        = <&pro_micro 2 GPIO_ACTIVE_HIGH> /* D2 */
+        , <&pro_micro 3 GPIO_ACTIVE_HIGH> /* D3 */
+        , <&pro_micro 4 GPIO_ACTIVE_HIGH> /* D4 */
+        , <&pro_micro 5 GPIO_ACTIVE_HIGH> /* D5 */
+        , <&pro_micro 6 GPIO_ACTIVE_HIGH> /* D6 */
+        , <&pro_micro 7 GPIO_ACTIVE_HIGH> /* D7 */
         ;
 };
 
-/* 2. 배터리 센서 설정 (판매자 파일 참조) */
+/* 배터리 설정 유지 */
 / {
     chosen {
         zmk,battery = &vbatt;
     };
-
     vbatt: vbatt {
         compatible = "zmk,battery-nrf-vddh";
     };
-};
-
-/* 3. 물리적 레이아웃 강제 지정 (선택사항, 6열 4행 표준) */
-&default_transform {
-    col-offset = <0>;
-    row-offset = <0>;
 };
