@@ -1,0 +1,11 @@
+/* [중요] 알리발 짭나노(SuperMini) 배터리 센서 설정 */
+/ {
+    chosen {
+        zmk,battery = &vbatt;
+    };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-nrf-vddh";
+        label = "VBATT";
+    };
+};
