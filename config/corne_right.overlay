@@ -4,26 +4,40 @@
 &pro_micro_i2c {
     status = "okay";
 
+    /* 트랙패드 설정 */
     trackpad: iqs5xx@74 {
         compatible = "azoteq,iqs5xx";
         reg = <0x74>;
         
-        /* 핀 설정 (Nice!Nano P1.01, P1.02) */
+        /* * Nice!Nano v2 기준 핀 연결 (사용자 환경)
+         * Reset: P1.01 (Pro Micro 핀 아님, 나노 내부 패드)
+         * Int/Rdy: P1.02 (나노 내부 패드)
+         */
         reset-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
-        int-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+        rdy-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
 
-        /* 설정 */
+        /* 설정값 */
         press-and-hold;
         press-and-hold-time = <250>;
+        one-finger-tap;
+        two-finger-tap;
+        scroll;
+        natural-scroll-y;
+        natural-scroll-x;
+        
+        /* 센서 방향 회전 */
+        switch-xy;
     };
 };
 
-/* 입력 리스너 (최신 ZMK 필수) */
+/* 입력 리스너 연결 (Zephyr 3.5 / ZMK Main 필수) */
 / {
     input_listener {
         compatible = "zmk,input-listener";
         device = <&trackpad>;
-        xy-swap; /* 방향 전환 */
+        
+        /* 커서/스크롤 방향 제어 */
+        xy-swap;
         y-invert;
         x-invert;
         scale-multiplier = <1>;
