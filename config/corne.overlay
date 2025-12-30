@@ -22,43 +22,36 @@
     };
 };
 
-
 &kscan0 {
     compatible = "zmk,kscan-gpio-matrix";
     wakeup-source;
-    
-    /* * 칩이 뒤집히면서 다이오드 방향과 핀 역할이 물리적으로 반전되었습니다.
-     * 따라서 row-gpios와 col-gpios의 핀을 서로 맞바꾸어 매핑합니다.
-     */
-
     diode-direction = "col2row";
 
-    /* * [New Rows]
-     * 원래 PCB의 왼쪽(Row) 구멍에 -> 칩의 오른쪽 핀들이 꽂힘 
-     * 칩 오른쪽 핀: A1, A0, 15, 14 (ZMK 이름: 19, 18, 15, 14)
+    /* * [Face-Up 매트릭스 수정]
+     * PCB의 Row 구멍(오른쪽 헤더)은 -> MCU의 왼쪽 핀(D2~D5)에 연결됨
      */
     row-gpios
-        = <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)> /* A1 */
-        , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)> /* A0 */
-        , <&pro_micro 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)> /* 15 */
-        , <&pro_micro 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)> /* 14 */
+        = <&pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* D2 (Row 0) */
+        , <&pro_micro 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* D3 (Row 1) */
+        , <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* D4 (Row 2) */
+        , <&pro_micro 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* D5 (Row 3) */
         ;
 
-    /* * [New Cols]
-     * 원래 PCB의 오른쪽(Col) 구멍에 -> 칩의 왼쪽 핀들이 꽂힘
-     * 칩 왼쪽 핀: D2, D3, D4, D5, D6, D7 (ZMK 이름: 2, 3, 4, 5, 6, 7)
+    /* * PCB의 Col 구멍들은 MCU의 나머지 핀들에 연결됨
+     * Col 0~3 (오른쪽 헤더) -> MCU 왼쪽 핀 (D6~B5)
+     * Col 4~5 (왼쪽 헤더)   -> MCU 오른쪽 핀 (16, 10)
      */
     col-gpios
-        = <&pro_micro 2 GPIO_ACTIVE_HIGH> /* D2 */
-        , <&pro_micro 3 GPIO_ACTIVE_HIGH> /* D3 */
-        , <&pro_micro 4 GPIO_ACTIVE_HIGH> /* D4 */
-        , <&pro_micro 5 GPIO_ACTIVE_HIGH> /* D5 */
-        , <&pro_micro 6 GPIO_ACTIVE_HIGH> /* D6 */
-        , <&pro_micro 7 GPIO_ACTIVE_HIGH> /* D7 */
+        = <&pro_micro 6 GPIO_ACTIVE_HIGH>  /* D6 (Col 0) */
+        , <&pro_micro 7 GPIO_ACTIVE_HIGH>  /* D7 (Col 1) */
+        , <&pro_micro 8 GPIO_ACTIVE_HIGH>  /* B4 (Col 2) */
+        , <&pro_micro 9 GPIO_ACTIVE_HIGH>  /* B5 (Col 3) */
+        , <&pro_micro 16 GPIO_ACTIVE_HIGH> /* 16 (Col 4) */
+        , <&pro_micro 10 GPIO_ACTIVE_HIGH> /* 10 (Col 5) */
         ;
 };
 
-/* 배터리 설정 유지 */
+/* 배터리 센서 설정 유지 */
 / {
     chosen {
         zmk,battery = &vbatt;
