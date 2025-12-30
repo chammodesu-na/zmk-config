@@ -1,37 +1,48 @@
-#include <dt-bindings/zmk/matrix_transform.h>
+/* config/corne_right.overlay */
 
-/ {
-    /* [1] 에러 해결의 핵심: zip_xy_swap을 여기서 직접 만듭니다. */
-    zip_xy_swap: zip_xy_swap {
-        compatible = "zmk,input-processor-xy-swap";
-        #input-processor-cells = <0>;
-    };
+#include "corne.dtsi" 
+/* 위 include는 본인 환경에 맞춰 자동 생성될 수 있으니, 
+   만약 빌드 에러나면 #include <dt-bindings/zmk/matrix_transform.h> 로 바꾸세요 */
+
+&default_transform {
+    col-offset = <6>;
 };
 
+/* I2C 버스 활성화 */
 &pro_micro_i2c {
     status = "okay";
 
-    trackpad: iqs5xx@74 {
+    /* 트랙패드 설정 (참고하신 코드와 동일한 방식) */
+    iqs5xx@74 {
+        status = "okay";
         compatible = "azoteq,iqs5xx";
         reg = <0x74>;
 
-        /* 핀 설정 (기존 유지) */
+        /* 핀 설정 (Nice!Nano v2 기준) */
         reset-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
         rdy-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
 
-        /* 하드웨어 설정 */
+        /* 제스처 및 동작 설정 (드라이버가 직접 처리) */
+        one-finger-tap;
         press-and-hold;
         press-and-hold-time = <250>;
+        two-finger-tap;
+
+        scroll;
+        natural-scroll-y;
+        natural-scroll-x;
+
+        /* 감도 조절 */
+        bottom-beta = <5>;
+        stationary-threshold = <5>;
+
+        /* 방향 전환 (드라이버 내부 기능 사용) */
+        switch-xy;
+        /* invert-x; */
+        /* invert-y; */
     };
 };
 
-/* 입력 리스너 설정 */
-/ {
-    input_listener {
-        compatible = "zmk,input-listener";
-        device = <&trackpad>;
-
-        /* [2] 위에서 만든 zip_xy_swap을 가져다 씁니다 */
-        input-processors = <&zip_xy_swap>;
-    };
-};
+/* * 중요: input_listener 노드를 아예 삭제했습니다.
+ * 이제 드라이버가 직접 마우스 신호를 쏘기 때문에 리스너가 필요 없습니다.
+ */
