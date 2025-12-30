@@ -1,8 +1,6 @@
 /* config/corne_right.overlay */
 
-#include "corne.dtsi" 
-/* 위 include는 본인 환경에 맞춰 자동 생성될 수 있으니, 
-   만약 빌드 에러나면 #include <dt-bindings/zmk/matrix_transform.h> 로 바꾸세요 */
+#include <dt-bindings/zmk/matrix_transform.h>
 
 &default_transform {
     col-offset = <6>;
