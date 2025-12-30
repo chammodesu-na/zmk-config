@@ -1,5 +1,12 @@
 #include <dt-bindings/zmk/matrix_transform.h>
-#include <dt-bindings/zmk/input_transform.h> // 필수 포함
+
+/ {
+    /* [1] 에러 해결의 핵심: zip_xy_swap을 여기서 직접 만듭니다. */
+    zip_xy_swap: zip_xy_swap {
+        compatible = "zmk,input-processor-xy-swap";
+        #input-processor-cells = <0>;
+    };
+};
 
 &pro_micro_i2c {
     status = "okay";
@@ -7,8 +14,8 @@
     trackpad: iqs5xx@74 {
         compatible = "azoteq,iqs5xx";
         reg = <0x74>;
-        
-        /* 핀 설정 (사용자 환경에 맞게 유지) */
+
+        /* 핀 설정 (기존 유지) */
         reset-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
         rdy-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
 
@@ -18,17 +25,13 @@
     };
 };
 
-/* 입력 리스너 (여기가 에러 원인이었음 -> 수정됨) */
+/* 입력 리스너 설정 */
 / {
     input_listener {
         compatible = "zmk,input-listener";
         device = <&trackpad>;
-        
-        /* * [최신 방식] input-processors를 사용하여 방향 설정 
-         * xy-swap -> &zip_xy_swap
-         * y-invert -> &zip_invert_y
-         * x-invert -> &zip_invert_x
-         */
-        input-processors = <&zip_xy_swap>, <&zip_invert_x>, <&zip_invert_y>;
+
+        /* [2] 위에서 만든 zip_xy_swap을 가져다 씁니다 */
+        input-processors = <&zip_xy_swap>;
     };
 };
